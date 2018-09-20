@@ -3,6 +3,7 @@
 	"description": "Tag language parser",
 	"version": "0.1.0",
 	"author": "Josh Junon <josh@junon.me>",
+        "repository": "anubis/tag-parser",
 	"license": "MIT",
         "files": [
                 "index.js",
