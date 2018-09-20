@@ -61,25 +61,27 @@ basic_char
 	;
 
 quoted_string
-	= '`' chars:quoted_char* '`'
+	= '`' chunks:(quoted_chunk*) '`'
 	{
-		const segments = [];
-		for (const c of chars) {
-			if (typeof c === 'string') {
-				segments.push(c);
-			} else {
-				segments.push(c.join(''));
-			}
+		for (let i = 1; i < chunks.length; i++) {
+			chunks[i] = {append: chunks[i]};
 		}
 
-		const joined = segments.join('');
-		return [() => joined];
+		if (chunks.length === 0) {
+			chunks.push({literal: ''});
+		}
+
+		return chunks;
 	}
 	;
 
-quoted_char
+quoted_chunk
 	= substitution
-	/ escape_sequence
+	/ quoted_literal+ {return {literal: text()};}
+	;
+
+quoted_literal
+	= escape_sequence
 	/ argument_chars
 	/ literal_right_bracket
 	/ WS
@@ -134,7 +136,7 @@ variable_reference
 			res.optional = true;
 		}
 
-		return [res];
+		return res;
 	}
 	;
 
