@@ -4,6 +4,12 @@
 	"version": "0.1.0",
 	"author": "Josh Junon <josh@junon.me>",
 	"license": "MIT",
+        "files": [
+                "index.js",
+                "tag.pegjs",
+                "LICENSE",
+                "README.md"
+        ],
 	"engines": {
 		"node": ">=10.5.0"
 	},
