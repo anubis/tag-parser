@@ -34,7 +34,7 @@ command_identifier "command name (must be upper case)"
 	;
 
 argument_list "argument list"
-	= first:(a:argument {return a;}) rest:(ws:WS n:argument {return [{skip: {literal: ws}}, n];})*
+	= first:argument rest:(ws:WS n:argument {return [{skip: {literal: ws}}, n];})*
 	{
 		return flatten([first].concat(rest));
 	}
