@@ -3,24 +3,24 @@
 	"description": "Tag language parser",
 	"version": "0.1.0",
 	"author": "Josh Junon <josh@junon.me>",
-        "repository": "anubis/tag-parser",
+	"repository": "anubis/tag-parser",
 	"license": "MIT",
-        "files": [
-                "index.js",
-                "tag.pegjs",
-                "LICENSE",
-                "README.md"
-        ],
+	"files": [
+		"index.js",
+		"tag.pegjs",
+		"LICENSE",
+		"README.md"
+	],
 	"engines": {
 		"node": ">=10.5.0"
 	},
 	"scripts": {
 		"lint": "xo",
-                "test": "mocha"
+		"test": "mocha"
 	},
 	"devDependencies": {
-		"xo": "0.23.0",
-		"mocha": "^5.2.0"
+		"mocha": "^5.2.0",
+		"xo": "^0.23.0"
 	},
 	"dependencies": {
 		"backslash": "0.2.0",

@@ -1,13 +1,13 @@
+/* eslint-env mocha */
+
 const assert = require('assert');
 
 const parser = require('.');
 
-const FUNCID = '\0FUNC\0';
-
 describe('basics', () => {
 	it('must parse a basic echo statement', () => {
 		const statements = parser('ECHO hello there\ttabbed    multispace');
-		assert.deepEqual(statements, [{
+		assert.deepStrictEqual(statements, [{
 			keyword: 'ECHO',
 			arguments: [
 				{literal: 'hello'},
@@ -23,7 +23,7 @@ describe('basics', () => {
 
 	it('must parse a basic conditional echo statement', () => {
 		const statements = parser('@foo !qux @bar !qix ECHO hello  there');
-		assert.deepEqual(statements, [{
+		assert.deepStrictEqual(statements, [{
 			conditional: [
 				{tagPositive: 'foo'},
 				{tagNegative: 'qux'},
@@ -44,7 +44,7 @@ describe('basics', () => {
 	it('must parse indented (block) rules', () => {
 		const statements = parser('RULE foo:   bar\n\tECHO make {in} -> {out}');
 
-		assert.deepEqual(statements, [
+		assert.deepStrictEqual(statements, [
 			{
 				keyword: 'RULE',
 				arguments: [
@@ -74,7 +74,7 @@ describe('quotes strings', () => {
 	it('must parse a basic quoted string', () => {
 		const statements = parser('ECHO `Hello, World!`\nECHO `hello`\nECHO `hello\ttabbed!`\nECHO `hello there` `multiple args`');
 
-		assert.deepEqual(statements, [
+		assert.deepStrictEqual(statements, [
 			{
 				keyword: 'ECHO',
 				arguments: [
@@ -100,14 +100,14 @@ describe('quotes strings', () => {
 					{skip: {literal: ' '}},
 					{literal: 'multiple args'}
 				]
-			},
+			}
 		]);
 	});
 
 	it('must parse quoted strings and substitutions', () => {
 		const statements = parser('ECHO `Hello, {name}!`');
 
-		assert.deepEqual(statements, [{
+		assert.deepStrictEqual(statements, [{
 			keyword: 'ECHO',
 			arguments: [
 				{literal: 'Hello, '},
@@ -120,7 +120,7 @@ describe('quotes strings', () => {
 	it('must parse conditional substitutions', () => {
 		const statements = parser('ECHO `testing: {@foo FOO IS ENABLED, {name}} (end test)`');
 
-		assert.deepEqual(statements, [{
+		assert.deepStrictEqual(statements, [{
 			keyword: 'ECHO',
 			arguments: [
 				{literal: 'testing: '},
@@ -136,14 +136,14 @@ describe('quotes strings', () => {
 						{substitution: [{literal: 'name'}]}
 					]
 				}},
-				{append: {literal: ' (end test)'}},
+				{append: {literal: ' (end test)'}}
 			]
 		}]);
 	});
 
 	it('must parse empty string literals', () => {
 		const statements = parser('ECHO `hello` `` `` `world!`');
-		assert.deepEqual(statements, [{
+		assert.deepStrictEqual(statements, [{
 			keyword: 'ECHO',
 			arguments: [
 				{literal: 'hello'},

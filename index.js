@@ -7,7 +7,7 @@ const tagGrammar = fs.readFileSync(path.join(__dirname, 'tag.pegjs'), 'utf-8');
 
 const pegOpts = {
 	allowedStartRules: ['tagfile']
-}
+};
 
 const tagParser = pegjs.generate(tagGrammar, pegOpts);
 
