@@ -3,6 +3,14 @@
 	const debug = require('debug')('tag-parser:grammar');
 
 	const flatten = list => list.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
+
+	function setloc(thing, loc) {
+		if ((typeof thing === 'object') && !('location' in thing)) {
+			Object.defineProperty(thing, 'location', {
+				value: loc
+			});
+		}
+	}
 }
 
 tagfile
@@ -16,6 +24,8 @@ statement
 			keyword,
 			arguments: _arguments
 		};
+
+		setloc(res, location());
 
 		if (conditional) {
 			res = {conditional, value: res};
@@ -36,14 +46,20 @@ command_identifier "command name (must be upper case)"
 argument_list "argument list"
 	= first:argument rest:(ws:WS n:argument {return [{skip: {literal: ws}}, n];})*
 	{
-		return flatten([first].concat(rest));
+		const res = flatten([first].concat(rest));
+		setloc(res, location());
+		return res;
 	}
 	;
 
 argument
-	= quoted_string
+	= a:(quoted_string
 	/ substitution
-	/ basic_argument
+	/ basic_argument)
+	{
+		setloc(a, location());
+		return a;
+	}
 	;
 
 basic_argument
@@ -71,6 +87,8 @@ quoted_string
 			chunks.push({literal: ''});
 		}
 
+		setloc(chunks, location());
+
 		return chunks;
 	}
 	;
@@ -81,10 +99,14 @@ quoted_chunk
 	;
 
 quoted_literal
-	= escape_sequence
+	= lit:(escape_sequence
 	/ argument_chars
 	/ literal_right_bracket
-	/ WS
+	/ WS)
+	{
+		setloc(lit, location());
+		return lit;
+	}
 	;
 
 literal_right_bracket
@@ -107,7 +129,11 @@ escape_sequence
 	;
 
 substitution
-	= '{' @substitution_expression '}'
+	= '{' se:substitution_expression '}'
+	{
+		setloc(se, location());
+		return se;
+	}
 	;
 
 substitution_expression
@@ -119,9 +145,12 @@ conditional_substitution_expression
 	= conditional:tag_conditional WS value:argument_list
 	{
 		value = flatten(value);
-		return conditional && conditional.length > 0
+		const res = conditional && conditional.length > 0
 			? {conditional, value}
 			: value;
+
+		setloc(res, location());
+		return res;
 	}
 	;
 
