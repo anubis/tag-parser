@@ -11,11 +11,8 @@ describe('basics', () => {
 			keyword: 'ECHO',
 			arguments: [
 				{literal: 'hello'},
-				{skip: {literal: ' '}},
 				{literal: 'there'},
-				{skip: {literal: '\t'}},
 				{literal: 'tabbed'},
-				{skip: {literal: '    '}},
 				{literal: 'multispace'}
 			]
 		}]);
@@ -34,7 +31,6 @@ describe('basics', () => {
 				keyword: 'ECHO',
 				arguments: [
 					{literal: 'hello'},
-					{skip: {literal: '  '}},
 					{literal: 'there'}
 				]
 			}
@@ -42,27 +38,26 @@ describe('basics', () => {
 	});
 
 	it('must parse indented (block) rules', () => {
-		const statements = parser('RULE foo:   bar\n\tECHO make {in} -> {out}');
+		const statements = parser('@foo RULE foo:   bar\n\tECHO make {in} -> {out}');
 
 		assert.deepStrictEqual(statements, [
 			{
-				keyword: 'RULE',
-				arguments: [
-					{literal: 'foo:'},
-					{skip: {literal: '   '}},
-					{literal: 'bar'}
-				]
+				conditional: [{tagPositive: 'foo'}],
+				value: {
+					keyword: 'RULE',
+					arguments: [
+						{literal: 'foo:'},
+						{literal: 'bar'}
+					]
+				}
 			},
 			{
 				keyword: 'ECHO',
 				indent: true,
 				arguments: [
 					{literal: 'make'},
-					{skip: {literal: ' '}},
 					{substitution: [{literal: 'in'}]},
-					{skip: {literal: ' '}},
 					{literal: '->'},
-					{skip: {literal: ' '}},
 					{substitution: [{literal: 'out'}]}
 				]
 			}
@@ -97,7 +92,6 @@ describe('quotes strings', () => {
 				keyword: 'ECHO',
 				arguments: [
 					{literal: 'hello there'},
-					{skip: {literal: ' '}},
 					{literal: 'multiple args'}
 				]
 			}
@@ -128,11 +122,8 @@ describe('quotes strings', () => {
 					conditional: [{tagPositive: 'foo'}],
 					value: [
 						{literal: 'FOO'},
-						{skip: {literal: ' '}},
 						{literal: 'IS'},
-						{skip: {literal: ' '}},
 						{literal: 'ENABLED,'},
-						{skip: {literal: ' '}},
 						{substitution: [{literal: 'name'}]}
 					]
 				}},
@@ -147,11 +138,8 @@ describe('quotes strings', () => {
 			keyword: 'ECHO',
 			arguments: [
 				{literal: 'hello'},
-				{skip: {literal: ' '}},
 				{literal: ''},
-				{skip: {literal: ' '}},
 				{literal: ''},
-				{skip: {literal: ' '}},
 				{literal: 'world!'}
 			]
 		}]);

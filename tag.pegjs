@@ -44,7 +44,7 @@ command_identifier "command name (must be upper case)"
 	;
 
 argument_list "argument list"
-	= first:argument rest:(ws:WS n:argument {return [{skip: {literal: ws}}, n];})*
+	= first:argument rest:(WS @argument)*
 	{
 		const res = flatten([first].concat(rest));
 		setloc(res, location());
